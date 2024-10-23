@@ -1,0 +1,37 @@
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_squared_error
+
+# Corrected data: Ensure all arrays have the same length and use ** for exponentiation
+data = pd.DataFrame({
+    'Pi_2': [3.645e12, 4.251e12, 2.068e12, 5.175e12, 4.258e12,11.7e12],  # 10^12 scaling
+    'Pi_3': [1.7397e7, 1.886e7, 1.8284e7, 1.7829e7, 1.775e7,1.3066e7],    # 10^7 scaling
+    'Pi_4': [1.5346e12, 13.96e12, 7.3592e12, 19.55e12, 17.12e12,48.85e12], # 10^12 scaling
+    'Efficiency': [0.8282, 0.6117, 0.6728, 0.720559, 0.767,0.796]       # Dependent variable
+})
+
+# Separate the independent variables (Pi_2, Pi_3, Pi_4) and the dependent variable (Efficiency)
+X = data[['Pi_2', 'Pi_3', 'Pi_4']]  # Independent variables
+y = data['Efficiency']  # Dependent variable
+
+# Create and fit the linear regression model
+model = LinearRegression()
+model.fit(X, y)
+
+# Predict using the model
+y_pred = model.predict(X)
+
+# Evaluate the model
+r2 = r2_score(y, y_pred)
+mse = mean_squared_error(y, y_pred)
+
+print(f"R² Score: {r2}")
+print(f"Mean Squared Error: {mse}")
+
+# Print the model coefficients and intercept
+print("Model coefficients:", model.coef_)
+print("Intercept:", model.intercept_)
+
+# Equation of the model
+print(f"Efficiency = {model.intercept_} + {model.coef_[0]}*Pi_2 + {model.coef_[1]}*Pi_3 + {model.coef_[2]}*Pi_4")
