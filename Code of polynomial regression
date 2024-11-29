@@ -1,0 +1,44 @@
+import numpy as np
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+# Input data
+pi2 = np.array([3.635e12, 11.7e12, 5.165e12, 4.258e12, 2.068e12, 4.251e12, 556.91e12, 478.65e12, 363.29e12, 298.41e12,
+                29.06e12, 55.17e12, 70.06e12, 80.82e12, 90.49e12, 120.90e12, 127.94e12, 150.39e12, 183.06e12, 212.78e12,
+                273.14e12, 226.13e12, 194.89e12, 166.51e12])
+pi3 = np.array([1.7397e7, 1.3066e7, 1.7829e7, 1.775e7, 1.8284e7, 1.886e7, 29.74e7, 27.71e7, 24.35e7, 22.06e7,
+                18.78e7, 20.59e7, 20.12e7, 19.30e7, 18.53e7, 19.02e7, 18.19e7, 18.12e7, 18.34e7, 18.35e7,
+                21.09e7, 19.23e7, 17.82e7, 16.50e7])
+pi4 = np.array([1.5346e13, 4.885e13, 1.955e13, 1.712e13, 0.73592e13, 1.396e13, 220.93e13, 191.80e13, 148.19e13, 121.48e13,
+                11.23e13, 19.45e13, 25.28e13, 30.39e13, 35.45e13, 46.13e13, 51.05e13, 60.25e13, 72.46e13, 84.16e13,
+                111.12e13, 92.45e13, 79.37e13, 68.02e13])
+pi1 = np.array([0.8282, 0.796, 0.7305, 0.767, 0.6728, 0.6117, 0.7825, 0.7904, 0.8046, 0.8037,
+                0.7626, 0.6955, 0.7117, 0.7418, 0.7727, 0.7527, 0.7871, 0.7903, 0.7808, 0.7802,
+                0.8024, 0.8064, 0.8034, 0.8058])
+
+# Combine the independent variables into a single array
+X = np.column_stack((pi2, pi3, pi4))
+
+# Polynomial regression with degree 2
+poly = PolynomialFeatures(degree=2, include_bias=False)
+X_poly = poly.fit_transform(X)
+
+# Fit the model
+model = LinearRegression()
+model.fit(X_poly, pi1)
+
+# Get the coefficients and intercept
+coefficients = model.coef_
+intercept = model.intercept_
+
+# Use get_feature_names for older versions of scikit-learn
+features = poly.get_feature_names(['pi2', 'pi3', 'pi4'])
+
+# Generate the polynomial equation
+equation = f"pi1 = {intercept:.5f}"
+for coef, feature in zip(coefficients, features):
+    equation += f" + ({coef:.5e}) * {feature}"
+
+# Print the equation
+print("\nPolynomial Regression Equation:")
+print(equation)
